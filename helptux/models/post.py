@@ -1,6 +1,7 @@
 from helptux import db
 from datetime import datetime
 import pytz
+# TODO is_deleted, is_visible
 
 
 class Tag(db.Model):
