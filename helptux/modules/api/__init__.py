@@ -10,11 +10,50 @@ from helptux import app
 
 
 class HelptuxApi:
-    def __init__(self, api_class):
-        self.api = api_class()
-        self.msg = None
 
-    def create(self, input_data, additional_opts):
+    def __init__(self, api_class, o_request, api_obj_id=None):
+        self.api = api_class()
+        self.request = o_request
+        self.msg = None
+        self.output_data = u''
+        ##
+        # Every request method has a self.action() defined:
+        #   GET => self.read(api_obj_id)
+        #   DELETE => self.delete(api_obj_id)
+        #   PUT => self.update(api_obj_id)
+        #   POST => self.create()
+        ##
+        input_data_raw = self.request.get_data()
+        input_data_string = input_data_raw.decode('utf-8')
+        if self.request.method == 'GET':
+            if api_obj_id is None:
+                self.msg = error_msg['missing_argument'].format('api_obj_id')
+            else:
+                self.output_data = self.read(api_obj_id)
+        elif self.request.method == 'DELETE':
+            if api_obj_id is None:
+                self.msg = error_msg['missing_argument'].format('api_obj_id')
+            else:
+                self.output_data = self.delete(api_obj_id)
+        elif self.request.method == 'PUT':
+            if api_obj_id is None:
+                self.msg = error_msg['missing_argument'].format('api_obj_id')
+            else:
+                if self.parse_json(input_data_string) is not None:
+                    self.output_data = self.update(api_obj_id, self.parse_json(input_data_string))
+        elif self.request.method == 'POST':
+            if self.parse_json(input_data_string) is not None:
+                self.output_data = self.parse_json(input_data_string)
+        else:
+            self.msg = error_msg['illegal_action'].format(self.request.method)
+        ##
+        # Set self.response
+        ##
+        self.response = self.create_response(self.output_data)
+
+    def create(self, input_data, additional_opts=None):
+        if not additional_opts:
+            additional_opts = {}
         try:
             created_object = self.api.create(input_data=input_data, **additional_opts)
         except DatabaseItemAlreadyExists:
@@ -46,7 +85,9 @@ class HelptuxApi:
         else:
             return u''
 
-    def update(self, item_id, input_data, additional_opts):
+    def update(self, item_id, input_data, additional_opts=None):
+        if not additional_opts:
+            additional_opts = {}
         try:
             updated_object = self.api.update(item_id, input_data=input_data, **additional_opts)
         except DatabaseItemDoesNotExist:
@@ -78,7 +119,7 @@ class HelptuxApi:
         else:
             return u''
 
-    def response(self, data):
+    def create_response(self, data):
         """
         Create an API response
         :param data:
@@ -87,9 +128,17 @@ class HelptuxApi:
         """
         resp = make_response()
         resp.headers['Content-Type'] = 'application/json'
+        resp.headers['Access-Control-Allow-Origin'] = '*'
         resp.data = json.dumps({
             'msg': self.msg,
             'data': data
         })
         return resp
 
+    def parse_json(self, unparsed_string):
+        try:
+            parsed_string = json.loads(unparsed_string)
+        except ValueError as e:
+            self.msg = u'A JSON error occurred: {0}'.format(e)
+            return None
+        return parsed_string
