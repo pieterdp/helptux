@@ -66,7 +66,6 @@ class UserApi(GenericApi):
         db.session.commit()
         return existing_user
 
-
     def delete(self, user_id):
         """
         Delete a user identified by user_id. See TagApi.delete()
