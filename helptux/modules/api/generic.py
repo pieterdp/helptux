@@ -1,6 +1,4 @@
 from helptux.modules.error import RequiredAttributeMissing, DatabaseItemDoesNotExist
-from helptux.models.post import Post, Type, Tag, Category, User
-from sqlalchemy import and_, or_
 
 
 class GenericApi:

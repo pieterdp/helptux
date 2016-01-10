@@ -129,27 +129,3 @@ class Type(db.Model):
             'type': self.type,
             'posts': [p.id for p in self.posts]
         }
-
-
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(255), index=True, unique=True, nullable=False)
-    email = db.Column(db.String(255), index=True, unique=True, nullable=False)
-    posts = db.relationship('Post', backref='author', lazy='dynamic')
-
-    def __init__(self, email, username=None):
-        if username is None:
-            username = email
-        self.email = email
-        self.username = username
-
-    def __repr__(self):
-        return '<User {0}>'.format(self.username)
-
-    def output_obj(self):
-        return {
-            'id': self.id,
-            'username': self.username,
-            'posts': [p.id for p in self.posts]
-        }
