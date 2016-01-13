@@ -1,0 +1,19 @@
+{
+  "name": "Helptux User Interface",
+  "homepage": "https://github.com/pieterdp/helptux",
+  "authors": [
+    "Pieter De Praetere <pieter.de.praetere@helptux.be>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "GPLv2",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
