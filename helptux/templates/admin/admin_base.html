@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>Helptux</title>
+    {% endif %}
+    <!-- CSS -->
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.css') }}"
+          rel="stylesheet"/>
+    <link href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap-theme.css') }}"
+          rel="stylesheet"/>
+    <!-- Helptux -->
+    <link href="{{ url_for('static', filename='helptux/helptux.css') }}" rel="stylesheet"/>
+    <link href="{{ url_for('static', filename='helptux/bootstrap-dashboard.css') }}" rel="stylesheet"/>
+    {% block helptux_css %}
+    {% endblock %}
+    <!-- Javascript -->
+    <!-- Bootstrap -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="application/javascript"
+            src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    <!-- Angular -->
+    <script type="application/javascript"
+            src="{{ url_for('static', filename='bower_components/angular/angular.min.js') }}"></script>
+    <script type="application/javascript"
+            src="{{ url_for('static', filename='bower_components/angular-route/angular-route.min.js') }}"></script>
+    <!-- Helptux -->
+    <script type="application/javascript" src="{{ url_for('static', filename='helptux/helptux.js') }}"></script>
+    {% block helptux_js %}
+    {% endblock %}
+</head>
+<body>
+{% include 'admin/admin_navigation.html' %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li class="dropdown-header">Blog administration</li>
+                <li class=""><a href="#">Reports</a></li>
+                <li class=""><a href="#">Analytics</a></li>
+                <li class=""><a href="#">Export</a></li>
+            </ul>
+            <ul class="nav nav-sidebar">
+                <li class="dropdown-header">User administration</li>
+                <li><a href="{{ url_for('.v_user_list') }}">User list</a></li>
+                <li><a href="{{ url_for('.v_user_create') }}">Add user</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            {% if get_flashed_messages() %}
+            <!-- Messages -->
+            {% for message in get_flashed_messages() %}
+            <div class="alert alert-info" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% block admin_content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

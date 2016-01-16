@@ -39,7 +39,7 @@ class User(db.Model):
     def __init__(self, email, password):
         self.email = email
         self.username = self.email
-        self.password(password)
+        self.set_password(password)
 
     def __repr__(self):
         return '<User {0}>'.format(self.username)
@@ -52,19 +52,13 @@ class User(db.Model):
             'roles': [r.id for r in self.roles]
         }
 
-    @property
-    def password(self):
-        raise AttributeError('Attribute unreadable')
-
-    @password.setter
-    def password(self, input_password):
-        # Work around to 72-character limit for bcrypt (https://github.com/pyca/bcrypt/)
-        hashed_input = sha512(input_password).digest()
-        self.password_hash = bcrypt.hashpw(hashed_input, bcrypt.gensalt())
+    def set_password(self, input_password):
+        bit_input = input_password.encode('utf-8')
+        self.password_hash = bcrypt.hashpw(bit_input, bcrypt.gensalt())
 
     def verify_password(self, input_password):
-        hashed_input = sha512(input_password).digest()
-        if bcrypt.hashpw(hashed_input, self.password_hash) == self.password_hash:
+        bit_input = input_password.encode('utf-8')
+        if bcrypt.hashpw(bit_input, self.password_hash) == self.password_hash:
             return True
         else:
             return False
@@ -80,3 +74,9 @@ class User(db.Model):
 
     def is_authenticated(self):
         return self.authenticated
+
+    def has_role(self, role_name):
+        for role in self.roles:
+            if role.role == role_name:
+                return True
+        return False

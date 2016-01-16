@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-    <form method="post" action="{{ url_for('.v_login') }}" class="form-inline">
+    <form method="post" action="{{ url_for('.v_login', next=next) }}" class="form-inline">
         <div class="form-group">
             <label for="login.email">E-mail address</label>
             {{ form.email(class_='form-control', id='login.email') }}

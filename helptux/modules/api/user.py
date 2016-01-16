@@ -1,3 +1,5 @@
+from sqlalchemy.orm import load_only
+from copy import copy, deepcopy
 from helptux.modules.api.generic import GenericApi
 from helptux.modules.api.role import RoleApi
 from helptux.models.user import User
@@ -8,7 +10,7 @@ from helptux.modules.error import RequiredAttributeMissing, DatabaseItemAlreadyE
 
 class UserApi(GenericApi):
     complex_params = ['posts', 'roles']  # List of role_ids
-    simple_params = ['email', 'password', 'user_name']
+    simple_params = ['email', 'password', 'username']
     required_params = ['email', 'password']
     possible_params = simple_params + complex_params
 
@@ -48,17 +50,21 @@ class UserApi(GenericApi):
             raise DatabaseItemDoesNotExist('No user with id {0}'.format(user_id))
         return existing_user
 
-    def update(self, user_id, input_data):
+    def update(self, user_id, input_data, update_password=True):
         """
         Update an existing user. See TagApi.update()
+        If update_password is true, the password will be updated,
+        even if it is empty. Otherwise, it will not be changed,
+        even if it has changed from what we have in the DB.
         :param user_id:
         :param input_data:
+        :param update_password:
         :return:
         """
         cleaned_data = self.clean_input(input_data)
         existing_user = self.read(user_id)
         # Update simple attributes
-        existing_user = self.update_simple_attributes(existing_user, self.simple_params, cleaned_data)
+        existing_user = self.update_user(existing_user, cleaned_data, update_password=update_password)
         # Update roles
         existing_user = self.remove_roles(existing_user)
         for role_id in cleaned_data['roles']:
@@ -101,6 +107,14 @@ class UserApi(GenericApi):
         else:
             raise InvalidPassword
 
+    def list(self):
+        """
+        List all users
+        :return:
+        """
+        all_users = User.query.all()
+        return all_users
+
     def clean_input(self, unclean_data):
         cleaned_data = self.clean_input_data(unclean_data, complex_params=self.complex_params,
                                              possible_params=self.possible_params, required_params=self.required_params)
@@ -112,6 +126,27 @@ class UserApi(GenericApi):
             entity.roles.remove(role)
         db.session.commit()
         return entity
+
+    def update_user(self, existing_user, cleaned_data, update_password=True):
+        """
+        Update an existing user with cleaned_data, but instead of directly setting user.password (which is impossible),
+        it uses user.set_password(). However, we need to remove the item 'password' from simple_params or otherwise
+        self.update_simple_attributes() will try to set it and fail. We will however, not call user.set_password()
+        if update_password is false.
+        :param existing_user:
+        :param cleaned_data:
+        :param update_password:
+        :return:
+        """
+        unhashed_password = cleaned_data['password']
+        simple_params = deepcopy(self.simple_params)
+        simple_params.remove('password')
+        # We can't set password via this method, because the database object only has password_hash
+        existing_user = self.update_simple_attributes(existing_user, simple_params, cleaned_data)
+        # Update password
+        if update_password is True:
+            existing_user.set_password(unhashed_password)
+        return existing_user
 
 
 @login_manager.user_loader

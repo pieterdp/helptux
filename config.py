@@ -16,6 +16,7 @@ DB_PASS = 'pass'
 ##
 WTF_CSRF_ENABLED = True
 SECRET_KEY = 'Zsfdcss7tSpmCTgnsoOmSEdQkfvk55ht6WB2zVDLcivKb4ekSbqYI4bsMmy1yGM'
+WTF_CSRF_SECRET_KEY = SECRET_KEY
 
 ##
 # Babel
