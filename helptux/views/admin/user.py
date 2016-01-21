@@ -42,7 +42,8 @@ def v_user_create():
         input_data = {
             'email': form.email.data,
             'password': form.password.data,
-            'roles': form.roles.data
+            'roles': form.roles.data,
+            'username': form.email.data
         }
         try:
             new_user = a_user.create(input_data)
