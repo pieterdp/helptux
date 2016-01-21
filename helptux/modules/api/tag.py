@@ -47,6 +47,14 @@ class TagApi(GenericApi):
             raise DatabaseItemDoesNotExist('No tag with id {0}'.format(tag_id))
         return existing_tag
 
+    def list(self):
+        """
+        Return all tags
+        :return:
+        """
+        existing_tags = Tag.query.all()
+        return existing_tags
+
     def update(self, tag_id, input_data):
         """
         Update a tag identified by rag_id. The variable input_data must contain all variables, both

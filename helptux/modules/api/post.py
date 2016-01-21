@@ -69,6 +69,14 @@ class PostApi(GenericApi):
             raise DatabaseItemDoesNotExist('No post with id {0}'.format(post_id))
         return existing_post
 
+    def list(self):
+        """
+        Return all posts
+        :return:
+        """
+        existing_posts = Post.query.all()
+        return existing_posts
+
     def update(self, post_id, input_data):
         """
         Update an existing post. See self.create() and TagApi.update().

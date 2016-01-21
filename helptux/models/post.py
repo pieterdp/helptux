@@ -100,6 +100,7 @@ class Post(db.Model):
             'id': self.id,
             'title': self.title,
             'content': self.content,
+            'abstract': self.abstract,
             'creation_time': self.creation_time.isoformat(),
             'last_modified': self.last_modified.isoformat(),
             'is_visible': self.is_visible,
@@ -109,6 +110,10 @@ class Post(db.Model):
             'tags': [t.output_obj() for t in self.tags],
             'categories': [c.output_obj() for c in self.categories]
         }
+
+    @property
+    def abstract(self):
+        return self.content[:100]
 
 
 class Type(db.Model):

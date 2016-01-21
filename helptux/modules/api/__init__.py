@@ -27,8 +27,11 @@ class HelptuxApi:
         self.response = make_response()
         if self.request.method == 'GET':
             if api_obj_id is None:
-                self.msg = error_msg['missing_argument'].format('api_obj_id')
-                self.response.status_code = 400
+                if hasattr(self.api, 'list'):
+                    self.output_data = self.list()
+                else:
+                    self.msg = error_msg['missing_argument'].format('api_obj_id')
+                    self.response.status_code = 400
             else:
                 self.output_data = self.read(api_obj_id)
         elif self.request.method == 'DELETE':
@@ -91,6 +94,21 @@ class HelptuxApi:
             self.msg = api_msg['item_read'].format(self.api, item_id)
         if found_object is not None:
             return found_object.output_obj()
+        else:
+            return u''
+
+    def list(self):
+        try:
+            found_objects = self.api.list()
+        except Exception as e:
+            self.msg = error_msg['error_occurred'].format(e)
+            self.response.status_code = 400
+            found_objects = None
+        if found_objects is not None:
+            output_objects = []
+            for found_object in found_objects:
+                output_objects.append(found_object.output_obj())
+            return output_objects
         else:
             return u''
 

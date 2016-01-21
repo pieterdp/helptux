@@ -41,6 +41,14 @@ class CategoryApi(GenericApi):
             raise DatabaseItemDoesNotExist('No category with id {0}'.format(category_id))
         return existing_category
 
+    def list(self):
+        """
+        Return all categories
+        :return:
+        """
+        existing_categories = Category.query.all()
+        return existing_categories
+
     def update(self, category_id, input_data):
         """
         Update a category identified by rag_id. The variable input_data must contain all variables, both

@@ -22,7 +22,7 @@
     {% endblock %}
     <!-- Javascript -->
     <!-- Bootstrap -->
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
     <script type="application/javascript"
             src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
     <!-- Angular -->
@@ -42,8 +42,8 @@
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
                 <li class="dropdown-header">Blog administration</li>
-                <li class=""><a href="#">Reports</a></li>
-                <li class=""><a href="#">Analytics</a></li>
+                <li class=""><a href="{{ url_for('.v_post_list') }}">Posts</a></li>
+                <li class=""><a href="{{ url_for('.v_post_create') }}">Create post</a></li>
                 <li class=""><a href="#">Export</a></li>
             </ul>
             <ul class="nav nav-sidebar">

@@ -41,6 +41,14 @@ class TypeApi(GenericApi):
             raise DatabaseItemDoesNotExist('No type with id {0}'.format(type_id))
         return existing_type
 
+    def list(self):
+        """
+        Return all types
+        :return:
+        """
+        existing_types = Type.query.all()
+        return existing_types
+
     def update(self, type_id, input_data):
         """
         Update a type identified by type_id with input_data. See TagApi.update() and TypeApi.create()

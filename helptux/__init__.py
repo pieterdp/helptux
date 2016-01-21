@@ -14,6 +14,7 @@ login_manager.login_view = '.v_login'
 from helptux.views.api import *
 from helptux.views.admin.auth import *
 from helptux.views.admin.user import *
+from helptux.views.admin.post import *
 
 
 @app.route('/')
