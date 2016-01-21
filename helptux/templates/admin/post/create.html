@@ -1,3 +1,39 @@
 {% extends 'admin/admin_base.html' %}
 {% block admin_content %}
+{% raw %}
+<div ng-app="post_admin">
+    <form novalidate ng-controller="CreateCtrl">
+        <div class="form-group">
+            <label for="post.title">Title</label>
+            <input type="text" class="form-control" id="post.title" ng-model="post.title" />
+            </div>
+        <div class="form-group">
+            <label for="post.content" class="sr-only">Content</label>
+            <textarea class="form-control" id="post.content" ng-model="post.content" rows="25">Post contents</textarea>
+        </div>
+        <div class="form-group">
+            <label for="post.type">Type</label>
+            <select class="form-control" ng-model="post.type" id="post.type">
+                <option ng-repeat="type in types"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            Categories
+        </div>
+        <div class="form-group">
+            Tags
+        </div>
+        <button type="submit" class="btn btn-default" ng-click="submit_form('post')"
+        ng-show="!success.post_submit[post.id] && !errors.post_submit[post.id]">
+            Save
+        </button>
+        <button type="button" class="btn btn-success" ng-show="success.post_submit[post.id]">
+            Saved
+        </button>
+        <buton type="button" class="btn btn-danger" ng-show="errors.post_submit[post.id]">
+            {{errors.post_submit[post.id]}}
+        </buton>
+    </form>
+</div>
+{% endraw %}
 {% endblock %}

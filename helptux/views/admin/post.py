@@ -18,4 +18,4 @@ def v_post_list():
 @login_required
 @must_be_editor
 def v_post_create():
-    pass
+    return render_template('admin/post/create.html')
