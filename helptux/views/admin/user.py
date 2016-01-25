@@ -1,11 +1,12 @@
 from flask import render_template, url_for, flash, request, redirect
 from flask.ext.login import login_required
-from helptux.modules.api.user import UserApi
-from helptux.modules.api.role import RoleApi
-from helptux.modules.user.admin import UserCreateForm, UserDeleteForm, UserModifyForm
-from helptux.modules.user.authentication import must_be_admin
-from helptux.modules.error import DatabaseItemAlreadyExists, RequiredAttributeMissing, DatabaseItemDoesNotExist
+
 from helptux import app
+from helptux.modules.api.role import RoleApi
+from helptux.modules.api.user import UserApi
+from helptux.modules.error import DatabaseItemAlreadyExists, RequiredAttributeMissing, DatabaseItemDoesNotExist
+from helptux.modules.user.authentication import must_be_admin
+from helptux.views.forms.user.admin import UserCreateForm, UserDeleteForm, UserModifyForm
 
 a_roles = RoleApi()
 db_roles = a_roles.list()

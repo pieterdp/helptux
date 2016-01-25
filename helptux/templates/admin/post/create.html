@@ -1,39 +1,68 @@
 {% extends 'admin/admin_base.html' %}
 {% block admin_content %}
-{% raw %}
-<div ng-app="post_admin">
-    <form novalidate ng-controller="CreateCtrl">
-        <div class="form-group">
-            <label for="post.title">Title</label>
-            <input type="text" class="form-control" id="post.title" ng-model="post.title" />
+    {% raw %}
+    <div ng-app="helptux.admin" class="container-fluid">
+        <form novalidate ng-controller="CreateCtrl">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="post.title" class="sr-only control-label">Title</label>
+                        <input type="text" class="form-control" id="post.title"
+                               placeholder="The title of this blog post."
+                               ng-model="post.title" ng-required="true"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="post.type" class="sr-only">Type</label>
+                        <select class="form-control" id="post.type" ng-model="post.type" ng-required="true"
+                                ng-options="type as type.type for type in available_types track by type.id"
+                                placeholder="Type of this post.">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="post.content" class="sr-only">Content</label>
+                    <textarea class="form-control" id="post.content" rows="25"
+                              placeholder="THe contents of this blog post." ng-model="post.content"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="post.tag" class="sr-only">Tags</label>
+                        <input list="post.tags" id="post.tag" ng-model="post.tag" placeholder="Tags"
+                               class="form-control"/>
+                        <datalist id="post.tags">
+                            <option value="{{tag.tag}}" ng-repeat="tag in available_tags"/>
+                        </datalist>
+                        <div>
+                            <ul>
+                                <li ng-repeat="tag in post.tags">{{tag.tag}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="post.cat" class="sr-only">Categories</label>
+                        <input list="post.cats" id="post.cat" ng-model="input_cat" placeholder="Categories"
+                               class="form-control" ng-keydown="$event.which == 32 && cat_to_cats(input_cat)" ng-value="input_cat"/>
+                        <datalist id="post.cats">
+                            <option ng-value="cat" ng-repeat="cat in available_cats">{{cat}}</option>
+                        </datalist>
+                        <input type="hidden" ng-model="post.cat" ng-value="json_api()" />
+                        <div>
+                            <ul>
+                                <li ng-repeat="cat in post.cats" ng-click="remove_cat(cat)">{{cat}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-        <div class="form-group">
-            <label for="post.content" class="sr-only">Content</label>
-            <textarea class="form-control" id="post.content" ng-model="post.content" rows="25">Post contents</textarea>
-        </div>
-        <div class="form-group">
-            <label for="post.type">Type</label>
-            <select class="form-control" ng-model="post.type" id="post.type">
-                <option ng-repeat="type in types"></option>
-            </select>
-        </div>
-        <div class="form-group">
-            Categories
-        </div>
-        <div class="form-group">
-            Tags
-        </div>
-        <button type="submit" class="btn btn-default" ng-click="submit_form('post')"
-        ng-show="!success.post_submit[post.id] && !errors.post_submit[post.id]">
-            Save
-        </button>
-        <button type="button" class="btn btn-success" ng-show="success.post_submit[post.id]">
-            Saved
-        </button>
-        <buton type="button" class="btn btn-danger" ng-show="errors.post_submit[post.id]">
-            {{errors.post_submit[post.id]}}
-        </buton>
-    </form>
-</div>
-{% endraw %}
+            <div class="row">
+                <div class="col-md-3 col-md-offset-2">
+                    <button type="submit" class="btn btn-default"
+                            ng-click="post_submit(post)">
+                        Opslaan
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% endraw %}
 {% endblock %}
