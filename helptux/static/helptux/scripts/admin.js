@@ -1,8 +1,8 @@
 var app = angular.module('helptux.admin', ['helptux.api_core', 'helptux.api_type', 'helptux.api_tag',
-    'helptux.api_cat']);
+    'helptux.api_cat', 'helptux.tagger']);
 
-app.controller('CreateCtrl', ['$scope', '$q', 'ApiCore', 'ApiType', 'ApiTag', 'ApiCat',
-    function($scope, $q, ApiCore, ApiType, ApiTag, ApiCat) {
+app.controller('CreateCtrl', ['$scope', '$q', 'ApiCore', 'ApiType', 'ApiTag', 'ApiCat', 'HelptuxTagger',
+    function($scope, $q, ApiCore, ApiType, ApiTag, ApiCat, HelptuxTagger) {
 
         /**
          * Reset all errors or one ($scope.errors.action) to their default values
@@ -64,48 +64,54 @@ app.controller('CreateCtrl', ['$scope', '$q', 'ApiCore', 'ApiType', 'ApiTag', 'A
         var a_type = new ApiType();
         var a_tag = new ApiTag();
         var a_cat = new ApiCat();
+        var h_tag = new HelptuxTagger();
 
         /**
          *
          */
-        $scope.cat_to_cats = function(input_cat) {
-            if(typeof(input_cat) != 'undefined') {
-                if($scope.available_cats.indexOf(input_cat) == -1) {
-                    /* We have to store it, as it didn't exist */
-                    a_cat.storeCat(input_cat);
-                }
-                $scope.post.cats.push(input_cat);
-                $scope.input_cat = undefined;
+        $scope.cat_to_cats = function(input_cat_name) {
+            $scope.post.cats.push(h_tag.add_tags_to_post('cats', input_cat_name, a_cat));
+            $scope.input_cat = undefined;
+        };
+
+        $scope.tag_to_tags = function(input_tag_name) {
+            $scope.post.tags.push(h_tag.add_tags_to_post('tags', input_tag_name, a_tag));
+            $scope.input_tag = undefined;
+        };
+
+        /**
+         *
+         */
+        $scope.remove_cat = function(input_cat_name) {
+            var cat_in_list = $scope.post.cats.indexOf(input_cat_name);
+            if(cat_in_list != -1) {
+                $scope.post.cats.splice(cat_in_list, 1);
             }
         };
 
         /**
          *
+         * @param input_tag_name
          */
-        $scope.remove_cat = function(cat) {};
-
-        /**
-         *
-         */
-        $scope.json_api = function() {
-            $scope.post.cat = JSON.stringify($scope.post.cats);
+       $scope.remove_tag = function(input_tag_name) {
+            var tag_in_list = $scope.post.tags.indexOf(input_tag_name);
+            if(tag_in_list != -1) {
+                $scope.post.tags.splice(tag_in_list, 1);
+            }
         };
-
 
         /*
         Set-up
          */
-        a_type.listTypes();
-        a_tag.listTags();
-        a_cat.listCats();
+        a_type.list();
+        a_tag.list();
+        a_cat.list();
 
         $scope.post = {
             title: '',
             type: '',
             content: '',
-            cat: '',
             cats: [],
-            tag: '',
             tags: []
         };
 

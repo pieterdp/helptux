@@ -6,10 +6,31 @@ api_tag.factory('ApiTag', ['$rootScope', 'ApiCore',
             this.a_api = new ApiCore();
         };
 
-        ApiTag.prototype.listTags = function() {
+        ApiTag.prototype.list = function() {
             this.a_api.list('tag').then(function success(api_data) {
                 $rootScope.available_tags = api_data.data.data;
             });
+        };
+        
+        ApiTag.prototype.store = function(tag_name) {
+            var tag = {
+                tag: tag_name
+            };
+            var self = this;
+            this.a_api.create(tag, 'tag').then(function success(){
+                self.list();
+            }, function error(data){
+                console.log(data);
+            });
+        };
+
+        ApiTag.prototype.exists = function(tag_name) {
+            for(var i = 0; i < $rootScope.available_tags.length; i++) {
+                if($rootScope.available_tags[i].tag == tag_name) {
+                    return true;
+                }
+            }
+            return false;
         };
 
         return ApiTag;

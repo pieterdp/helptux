@@ -16,7 +16,8 @@ from helptux import app
 @login_required
 @must_be_editor
 def a_post(post_id=None):
-    a_api = HelptuxApi(api_class=PostApi, o_request=request, api_obj_id=post_id)
+    # id of the current_user
+    a_api = HelptuxApi(api_class=PostApi, o_request=request, api_obj_id=post_id, additional_opts={'author_id': ''})
     return a_api.response
 
 

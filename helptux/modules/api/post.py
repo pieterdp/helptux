@@ -20,13 +20,22 @@ class PostApi(GenericApi):
         self.a_type = helptux.modules.api.type.TypeApi()
         self.a_user = helptux.modules.api.user.UserApi()
 
-    def create(self, input_data):
+    def create(self, input_data, author_id=None):
         """
         Create a new post. See TagApi.create(). It is created by the user referred to by author_id and is of the
         type type_id.
         :param input_data:
+        :param author_id:
         :return:
         """
+        if not author_id:
+            raise RequiredAttributeMissing('No author provided.')
+        try:
+            author = self.a_user.read(author_id)
+        except DatabaseItemDoesNotExist:
+            raise Exception('Author {0} does not exist.'.format(author_id))
+        else:
+            input_data['author_id'] = author_id
         cleaned_data = self.clean_input(input_data)
         try:
             existing_post = self.get_by_title(cleaned_data['title'])
@@ -77,13 +86,21 @@ class PostApi(GenericApi):
         existing_posts = Post.query.all()
         return existing_posts
 
-    def update(self, post_id, input_data):
+    def update(self, post_id, input_data, author_id=None):
         """
         Update an existing post. See self.create() and TagApi.update().
         :param post_id:
         :param input_data:
         :return:
         """
+        if not author_id:
+            raise RequiredAttributeMissing('No author provided.')
+        try:
+            author = self.a_user.read(author_id)
+        except DatabaseItemDoesNotExist:
+            raise Exception('Author {0} does not exist.'.format(author_id))
+        else:
+            input_data['author_id'] = author_id
         cleaned_data = self.clean_input(input_data)
         existing_post = self.read(post_id)
         type_id = cleaned_data['type_id']

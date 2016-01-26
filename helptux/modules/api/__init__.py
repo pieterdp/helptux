@@ -10,11 +10,13 @@ from helptux import app
 
 
 class HelptuxApi:
-    def __init__(self, api_class, o_request, api_obj_id=None):
+    def __init__(self, api_class, o_request, api_obj_id=None, additional_opts=None):
         self.api = api_class()
         self.request = o_request
         self.msg = None
         self.output_data = u''
+        if not additional_opts:
+            additional_opts = {}
         ##
         # Every request method has a self.action() defined:
         #   GET => self.read(api_obj_id)
@@ -46,10 +48,10 @@ class HelptuxApi:
                 self.response.status_code = 400
             else:
                 if self.parse_json(input_data_string) is not None:
-                    self.output_data = self.update(api_obj_id, self.parse_json(input_data_string))
+                    self.output_data = self.update(api_obj_id, self.parse_json(input_data_string), additional_opts)
         elif self.request.method == 'POST':
             if self.parse_json(input_data_string) is not None:
-                self.output_data = self.create(self.parse_json(input_data_string))
+                self.output_data = self.create(self.parse_json(input_data_string), additional_opts)
         else:
             self.msg = error_msg['illegal_action'].format(self.request.method)
             self.response.status_code = 405

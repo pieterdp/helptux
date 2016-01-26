@@ -6,7 +6,7 @@ api_type.factory('ApiType', ['$rootScope', 'ApiCore',
             this.a_api = new ApiCore();
         };
 
-        ApiType.prototype.listTypes = function() {
+        ApiType.prototype.list = function() {
             this.a_api.list('type').then(function success(api_data) {
                 $rootScope.available_types = api_data.data.data;
             });
