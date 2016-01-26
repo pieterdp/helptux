@@ -9,26 +9,29 @@
                         <label for="post.title" class="sr-only control-label">Title</label>
                         <input type="text" class="form-control" id="post.title"
                                placeholder="The title of this blog post."
-                               ng-model="post.title" ng-required="true"/>
+                               ng-model="post.title" ng-required="true"
+                               ng-change="reset_submit_button('post_submit', post.id)"/>
                     </div>
                     <div class="form-group">
                         <label for="post.type" class="sr-only">Type</label>
                         <select class="form-control" id="post.type" ng-model="post.type" ng-required="true"
                                 ng-options="type as type.type for type in available_types track by type.id"
-                                placeholder="Type of this post.">
+                                ng-change="reset_submit_button('post_submit', post.id)">
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="post.content" class="sr-only">Content</label>
                     <textarea class="form-control" id="post.content" rows="25"
-                              placeholder="THe contents of this blog post." ng-model="post.content"></textarea>
+                              placeholder="The contents of this blog post." ng-model="post.content"
+                              ng-change="reset_submit_button('post_submit', post.id)"></textarea>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="post.tag" class="sr-only">Tags</label>
                         <input list="post.tags" id="post.tag" ng-model="input_tag" placeholder="Tags"
-                               class="form-control" ng-keydown="$event.which == 32 && tag_to_tags(input_tag)" ng-value="input_tag"/>
+                               class="form-control" ng-keydown="$event.which == 32 && tag_to_tags(input_tag)"
+                               ng-value="input_tag"  ng-change="reset_submit_button('post_submit', post.id)"/>
                         <datalist id="post.tags">
                             <option ng-value="tag.tag" ng-repeat="tag in available_tags">{{tag.tag}}</option>
                         </datalist>
@@ -41,7 +44,8 @@
                     <div class="form-group">
                         <label for="post.cat" class="sr-only">Categories</label>
                         <input list="post.cats" id="post.cat" ng-model="input_cat" placeholder="Categories"
-                               class="form-control" ng-keydown="$event.which == 32 && cat_to_cats(input_cat)" ng-value="input_cat"/>
+                               class="form-control" ng-keydown="$event.which == 32 && cat_to_cats(input_cat)"
+                               ng-value="input_cat"  ng-change="reset_submit_button('post_submit', post.id)"/>
                         <datalist id="post.cats">
                             <option ng-value="cat.category" ng-repeat="cat in available_cats">{{cat.category}}</option>
                         </datalist>
@@ -56,9 +60,29 @@
             <div class="row">
                 <div class="col-md-3 col-md-offset-2">
                     <button type="submit" class="btn btn-default"
-                            ng-click="post_submit(post)">
+                            ng-click="post_submit(post)"
+                            ng-show="!success.post_submit[post.id] && !errors.post_submit[post.id]">
+                        Save
+                    </button>
+                    <button type="button" class="btn btn-success" ng-show="success.post_submit[post.id]">
+                        Saved
+                    </button>
+                    <button type="button" class="btn btn-danger" ng-show="errors.post_submit[post.id]">
+                        {{errors.post_submit[post.id]}}
+                    </button>
+                    <!--
+                    <button type="submit" class="btn btn-default"
+                            ng-click="submit_form('question', section.id, question.id)"
+                            ng-show="!success.question_submit[question.id] && !errors.question_submit[question.id]">
                         Opslaan
                     </button>
+                    <button type="button" class="btn btn-success" ng-show="success.question_submit[question.id]">
+                        Opgeslagen
+                    </button>
+                    <button type="button" class="btn btn-danger" ng-show="errors.question_submit[question.id]">
+                        {{ errors.question_submit[question.id] }}
+                    </button>
+                    -->
                 </div>
             </div>
         </form>

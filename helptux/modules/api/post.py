@@ -91,6 +91,7 @@ class PostApi(GenericApi):
         Update an existing post. See self.create() and TagApi.update().
         :param post_id:
         :param input_data:
+        :param author_id:
         :return:
         """
         if not author_id:
@@ -102,6 +103,8 @@ class PostApi(GenericApi):
         else:
             input_data['author_id'] = author_id
         cleaned_data = self.clean_input(input_data)
+        if cleaned_data['last_modified']:
+            cleaned_data['last_modified'] = None  # TODO: something cleaner
         existing_post = self.read(post_id)
         type_id = cleaned_data['type_id']
         author_id = cleaned_data['author_id']
@@ -181,6 +184,7 @@ class PostApi(GenericApi):
             return str
 
     def clean_input(self, unclean_data):
+        # TODO: clean html tags (everywhere)
         cleaned_data = self.clean_input_data(unclean_data, complex_params=self.complex_params,
                                              possible_params=self.possible_params, required_params=self.required_params)
         if cleaned_data['last_modified']:

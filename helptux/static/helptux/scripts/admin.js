@@ -1,8 +1,8 @@
 var app = angular.module('helptux.admin', ['helptux.api_core', 'helptux.api_type', 'helptux.api_tag',
-    'helptux.api_cat', 'helptux.tagger']);
+    'helptux.api_cat', 'helptux.api_post', 'helptux.tagger']);
 
-app.controller('CreateCtrl', ['$scope', '$q', 'ApiCore', 'ApiType', 'ApiTag', 'ApiCat', 'HelptuxTagger',
-    function($scope, $q, ApiCore, ApiType, ApiTag, ApiCat, HelptuxTagger) {
+app.controller('CreateCtrl', ['$scope', '$q', 'ApiCore', 'ApiType', 'ApiTag', 'ApiCat', 'ApiPost', 'HelptuxTagger',
+    function($scope, $q, ApiCore, ApiType, ApiTag, ApiCat, ApiPost, HelptuxTagger) {
 
         /**
          * Reset all errors or one ($scope.errors.action) to their default values
@@ -64,6 +64,7 @@ app.controller('CreateCtrl', ['$scope', '$q', 'ApiCore', 'ApiType', 'ApiTag', 'A
         var a_type = new ApiType();
         var a_tag = new ApiTag();
         var a_cat = new ApiCat();
+        var a_post = new ApiPost();
         var h_tag = new HelptuxTagger();
 
         /**
@@ -108,6 +109,7 @@ app.controller('CreateCtrl', ['$scope', '$q', 'ApiCore', 'ApiType', 'ApiTag', 'A
         a_cat.list();
 
         $scope.post = {
+            id: $scope.new_post_id,
             title: '',
             type: '',
             content: '',
@@ -118,8 +120,14 @@ app.controller('CreateCtrl', ['$scope', '$q', 'ApiCore', 'ApiType', 'ApiTag', 'A
 
         $scope.post_submit = function(input_post){
             console.log(input_post);
+            a_post.store(input_post).then(function success(response){
+                $scope.post = a_post.prepare_for_display(response);
+                $scope.success.post_submit[input_post.id] = true;
+                console.log(response);
+            }, function error(response) {
+                console.log(response);
+                $scope.errors.post_submit[input_post.id] = response.data.msg;
+            });
         };
-
-        console.log($scope.post);
     }
 ]);

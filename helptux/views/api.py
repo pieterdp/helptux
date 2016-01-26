@@ -1,5 +1,5 @@
-from flask import request
-from flask.ext.login import login_required
+from flask import request, g
+from flask.ext.login import login_required, current_user
 import json
 
 from helptux.modules.api import HelptuxApi
@@ -16,8 +16,8 @@ from helptux import app
 @login_required
 @must_be_editor
 def a_post(post_id=None):
-    # id of the current_user
-    a_api = HelptuxApi(api_class=PostApi, o_request=request, api_obj_id=post_id, additional_opts={'author_id': ''})
+    a_api = HelptuxApi(api_class=PostApi, o_request=request, api_obj_id=post_id,
+                       additional_opts={'author_id': current_user.id})
     return a_api.response
 
 
