@@ -1,8 +1,11 @@
-var app = angular.module('helptux.admin', ['helptux.api_core', 'helptux.api_type', 'helptux.api_tag',
+var app = angular.module('helptux.admin', ['helptux.generic', 'helptux.api_core', 'helptux.api_type', 'helptux.api_tag',
     'helptux.api_cat', 'helptux.api_post', 'helptux.tagger']);
 
-app.controller('CreateCtrl', ['$scope', '$q', 'ApiCore', 'ApiType', 'ApiTag', 'ApiCat', 'ApiPost', 'HelptuxTagger',
-    function($scope, $q, ApiCore, ApiType, ApiTag, ApiCat, ApiPost, HelptuxTagger) {
+app.controller('PostAdminCtrl', ['$scope', '$q', 'HelptuxGeneric', 'ApiCore', 'ApiType', 'ApiTag', 'ApiCat', 'ApiPost',
+    'HelptuxTagger',
+    function($scope, $q, HelptuxGeneric, ApiCore, ApiType, ApiTag, ApiCat, ApiPost, HelptuxTagger) {
+
+        $scope.h_generic = new HelptuxGeneric();
 
         /**
          * Reset all errors or one ($scope.errors.action) to their default values
@@ -10,15 +13,7 @@ app.controller('CreateCtrl', ['$scope', '$q', 'ApiCore', 'ApiType', 'ApiTag', 'A
          * @param item_id
          */
         $scope.reset_errors = function(action, item_id) {
-            if (action == null) {
-                $scope.errors = {
-                    post_submit: {},
-                    post_remove: {},
-                    post_new: {}
-                };
-            } else {
-                $scope.errors[action][item_id] = false;
-            }
+            $scope.h_generic.reset_errors(action, item_id);
         };
 
         /**
@@ -27,15 +22,7 @@ app.controller('CreateCtrl', ['$scope', '$q', 'ApiCore', 'ApiType', 'ApiTag', 'A
          * @param item_id
          */
         $scope.reset_success = function(action, item_id) {
-            if (action == null) {
-                $scope.success = {
-                    post_submit: {},
-                    post_remove: {},
-                    post_new: {}
-                };
-            } else {
-                $scope.success[action][item_id] = false;
-            }
+            $scope.h_generic.reset_success(action, item_id);
         };
 
         /**
@@ -56,11 +43,9 @@ app.controller('CreateCtrl', ['$scope', '$q', 'ApiCore', 'ApiType', 'ApiTag', 'A
 
         $scope.new_post_id = -1;
 
-        var promises = [];
-        /*
+         /*
         Get all tags
          */
-        var a_core = new ApiCore();
         var a_type = new ApiType();
         var a_tag = new ApiTag();
         var a_cat = new ApiCat();
@@ -114,19 +99,30 @@ app.controller('CreateCtrl', ['$scope', '$q', 'ApiCore', 'ApiType', 'ApiTag', 'A
             type: '',
             content: '',
             cats: [],
-            tags: []
+            tags: [],
+            creation_time: ''
         };
+
+        if(document.getElementById('post_id').getAttribute('value') != '-1') {
+            var post_id = document.getElementById('post_id').getAttribute('value');
+            a_post.show(post_id).then(function success(response) {
+                $scope.post = a_post.prepare_for_display(response);
+                $scope.reset_submit_button('post_submit', post_id)
+            }, function error(response) {
+                console.log(response);
+            });
+        }
+
+
 
 
         $scope.post_submit = function(input_post){
-            console.log(input_post);
             a_post.store(input_post).then(function success(response){
                 $scope.post = a_post.prepare_for_display(response);
-                $scope.success.post_submit[input_post.id] = true;
-                console.log(response);
+                $scope.success.post_submit[$scope.post.id] = true;
+                console.log($scope.post);
             }, function error(response) {
-                console.log(response);
-                $scope.errors.post_submit[input_post.id] = response.data.msg;
+                $scope.errors.post_submit[$scope.post.id] = response.data.msg;
             });
         };
     }

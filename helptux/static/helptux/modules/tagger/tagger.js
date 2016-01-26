@@ -13,7 +13,7 @@ tagger.factory('HelptuxTagger', ['$rootScope',
          * @param api_inst
          */
         HelptuxTagger.prototype.add_tags_to_post = function(tag_type, tag_value, api_inst) {
-            if(typeof(tag_value) != 'undefined') {
+            if(typeof(tag_value) != 'undefined' && tag_value != ' ') {
                 /* Using onKeyPress may result in an undefined value being processed. We don't want that */
                 if(!api_inst.exists(tag_value)) {
                     /* Store it in the DB if it doesn't exist */
@@ -24,6 +24,4 @@ tagger.factory('HelptuxTagger', ['$rootScope',
         };
 
         return HelptuxTagger;
-    }]);/**
- * Created by pieter on 26/01/16.
- */
+    }]);

@@ -29,21 +29,14 @@ def v_post_list():
 def v_post_create():
     # Store the tags like if match then foo, else bar
     # input type=text; onlosefocus => use api to store them, onsubmit link (?)
-    form = PostCreateForm()
-    a_post = PostApi()
-    form.type.choices = possible_types
-    if request.method == 'POST' and form.validate_on_submit():
-        pass
-    else:
-        pass
-    return render_template('admin/post/create.html', form=form)
+    return render_template('admin/post/create.html', post_id=-1)
 
 
 @app.route('/admin/post/edit/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 @must_be_editor
 def v_post_edit(post_id):
-    pass
+    return render_template('admin/post/edit.html', post_id=post_id)
 
 
 @app.route('/admin/post/delete/<int:post_id>', methods=['GET', 'POST'])

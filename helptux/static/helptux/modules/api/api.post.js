@@ -6,6 +6,10 @@ api_post.factory('ApiPost', ['$rootScope', 'ApiCore',
             this.a_api = new ApiCore();
         };
 
+        ApiPost.prototype.show = function(post_id) {
+            return this.a_api.read(post_id, 'post');
+        };
+
         ApiPost.prototype.list = function() {
             this.a_api.list('post').then(function success(api_data) {
                 $rootScope.available_posts = api_data.data.data;
@@ -22,7 +26,8 @@ api_post.factory('ApiPost', ['$rootScope', 'ApiCore',
             var submit_post = {
                 title: input_data.title,
                 content: input_data.content,
-                type_id: input_data.type.id
+                type_id: input_data.type.id,
+                creation_time: input_data.creation_time
             };
             /* Parse tags */
             var submit_tags = [];

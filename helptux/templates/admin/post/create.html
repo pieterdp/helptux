@@ -2,10 +2,13 @@
 {% block admin_content %}
     {% raw %}
     <div ng-app="helptux.admin" class="container-fluid">
-        <form novalidate ng-controller="CreateCtrl">
+        <form novalidate ng-controller="PostAdminCtrl">
             <div class="row">
                 <div class="col-md-8">
                     <div class="form-group">
+                        {% endraw %}
+                        <input type="hidden" id="post_id" value="{{ post_id }}"/>
+                        {% raw %}
                         <label for="post.title" class="sr-only control-label">Title</label>
                         <input type="text" class="form-control" id="post.title"
                                placeholder="The title of this blog post."

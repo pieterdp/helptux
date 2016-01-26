@@ -1,4 +1,5 @@
 from datetime import datetime
+import pytz
 from helptux.modules.api.generic import GenericApi
 from helptux.models.post import Post
 from helptux import db
@@ -14,6 +15,7 @@ class PostApi(GenericApi):
     simple_params = ['title', 'content', 'creation_time', 'last_modified', 'is_visible', 'is_deleted', 'type_id',
                      'author_id']
     required_params = ['title', 'type_id', 'author_id']
+    no_update_params = ['last_modified', 'creation_time']
     possible_params = simple_params + complex_params
 
     def __init__(self):
@@ -103,9 +105,10 @@ class PostApi(GenericApi):
         else:
             input_data['author_id'] = author_id
         cleaned_data = self.clean_input(input_data)
-        if cleaned_data['last_modified']:
-            cleaned_data['last_modified'] = None  # TODO: something cleaner
         existing_post = self.read(post_id)
+        for no_update_param in self.no_update_params:
+            cleaned_data[no_update_param] = getattr(existing_post, no_update_param)
+        cleaned_data['last_modified'] = datetime.now(tz=pytz.timezone('Europe/Brussels'))
         type_id = cleaned_data['type_id']
         author_id = cleaned_data['author_id']
         # Update simple attributes
@@ -189,6 +192,14 @@ class PostApi(GenericApi):
                                              possible_params=self.possible_params, required_params=self.required_params)
         if cleaned_data['last_modified']:
             cleaned_data['last_modified'] = self.convert_date_from_string_to_datetime(cleaned_data['last_modified'])
+        else:
+            cleaned_data['last_modified'] = datetime.now(tz=pytz.timezone('Europe/Brussels'))
         if cleaned_data['creation_time']:
             cleaned_data['creation_time'] = self.convert_date_from_string_to_datetime(cleaned_data['creation_time'])
+        else:
+            cleaned_data['creation_time'] = datetime.now(tz=pytz.timezone('Europe/Brussels'))
+        if not cleaned_data['is_visible']:
+            cleaned_data['is_visible'] = True
+        if not cleaned_data['is_deleted']:
+            cleaned_data['is_deleted'] = False
         return cleaned_data
