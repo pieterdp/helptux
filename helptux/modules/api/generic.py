@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from helptux.modules.error import RequiredAttributeMissing, DatabaseItemDoesNotExist
 
 
@@ -31,6 +32,12 @@ class GenericApi:
         for complex_param in complex_params:
             if type(cleaned[complex_param]) is not list:
                 cleaned[complex_param] = [cleaned[complex_param]]
+        # Remove all HTML tags
+        for possible_param in possible_params:
+            if not possible_param in complex_params:
+                if cleaned[possible_param]:
+                    soup = BeautifulSoup(str(cleaned[possible_param]), 'html.parser')
+                    cleaned[possible_param] = soup.get_text()
         return cleaned
 
     def update_entity_attribute(self, entity, attribute_name, attribute_new_value):

@@ -5,42 +5,47 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% if title %}
-    <title>{{ title }}</title>
+        <title>{{ title }}</title>
     {% else %}
-    <title>Helptux</title>
+        <title>Helptux</title>
     {% endif %}
     <!-- CSS -->
     <!-- Bootstrap -->
-    <link href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.css') }}" rel="stylesheet" />
-    <link href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap-theme.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.css') }}"
+          rel="stylesheet"/>
+    <link href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap-theme.css') }}"
+          rel="stylesheet"/>
+    <link href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap-blog.css') }}"
+          rel="stylesheet"/>
     <!-- Helptux -->
-    <link href="{{ url_for('static', filename='helptux/helptux.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='helptux/helptux.css') }}" rel="stylesheet"/>
     {% block helptux_css %}
     {% endblock %}
     <!-- Javascript -->
     <!-- Bootstrap -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="application/javascript" src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    <script type="application/javascript"
+            src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
     <!-- Angular -->
-    <script type="application/javascript" src="{{ url_for('static', filename='bower_components/angular/angular.min.js') }}"></script>
-    <script type="application/javascript" src="{{ url_for('static', filename='bower_components/angular-route/angular-route.min.js') }}"></script>
+    <script type="application/javascript"
+            src="{{ url_for('static', filename='bower_components/angular/angular.min.js') }}"></script>
+    <script type="application/javascript"
+            src="{{ url_for('static', filename='bower_components/angular-route/angular-route.min.js') }}"></script>
     <!-- Helptux -->
     <script type="application/javascript" src="{{ url_for('static', filename='helptux/helptux.js') }}"></script>
     {% block helptux_js %}
     {% endblock %}
 </head>
 <body>
-<div class="container">
-    {% include 'navigation.html' %}
-    <!-- Messages -->
-    {% for message in get_flashed_messages() %}
-        <div class="alert alert-danger" role="alert">
+{% include 'navigation.html' %}
+<!-- Messages -->
+{% for message in get_flashed_messages() %}
+    <div class="alert alert-danger" role="alert">
         {{ message }}
-        </div>
-    {% endfor %}
-    {% block content %}
-    {% endblock %}
-    {% include 'footer.html' %}
-</div>
+    </div>
+{% endfor %}
+{% block content %}
+{% endblock %}
+{% include 'footer.html' %}
 </body>
 </html>

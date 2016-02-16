@@ -15,6 +15,7 @@ from helptux.views.api import *
 from helptux.views.admin.auth import *
 from helptux.views.admin.user import *
 from helptux.views.admin.post import *
+from helptux.views.posts import *
 
 
 @app.route('/')

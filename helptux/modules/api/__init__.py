@@ -70,10 +70,10 @@ class HelptuxApi:
             self.msg = error_msg['item_exists'].format(self.api)
             self.response.status_code = 400
             created_object = None
-        except Exception as e:
-            self.msg = error_msg['error_occurred'].format(e)
-            self.response.status_code = 400
-            created_object = None
+        #except Exception as e:
+        #    self.msg = error_msg['error_occurred'].format(e)
+        #    self.response.status_code = 400
+        #    created_object = None
         else:
             self.msg = api_msg['item_created'].format(self.api, created_object.id)
         if created_object is not None:
