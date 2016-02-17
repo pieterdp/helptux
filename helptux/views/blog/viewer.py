@@ -22,5 +22,6 @@ class ViewPost:
             'title': post.title,
             'formatted_date': post.last_modified.strftime('%d-%m-%Y'),
             'author': post.author.username,
-            'formatted_content': Markup(self.post_to_html(post.content))
+            'formatted_content': Markup(self.post_to_html(post.content)),
+            'tags': post.tags
         }

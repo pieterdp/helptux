@@ -29,31 +29,6 @@ tags_posts = db.Table('tags_posts',
                       )
 
 
-class Category(db.Model):
-    __tablename__ = 'categories'
-    id = db.Column(db.Integer, primary_key=True)
-    category = db.Column(db.String(255), index=True, nullable=False, unique=True)
-
-    def __init__(self, category):
-        self.category = category
-
-    def __repr__(self):
-        return u'<Category {0}>'.format(self.category)
-
-    def output_obj(self):
-        return {
-            'id': self.id,
-            'category': self.category,
-            'posts': [p.id for p in self.posts]
-        }
-
-
-categories_posts = db.Table('categories_posts',
-                            db.Column('category_id', db.Integer, db.ForeignKey('categories.id')),
-                            db.Column('post_id', db.Integer, db.ForeignKey('posts.id'))
-                            )
-
-
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
@@ -71,12 +46,6 @@ class Post(db.Model):
                            secondaryjoin=(tags_posts.c.tag_id == Tag.id),
                            backref=db.backref('posts', lazy='dynamic'),
                            lazy='dynamic')
-    categories = db.relationship('Category',
-                                 secondary=categories_posts,
-                                 primaryjoin=(categories_posts.c.post_id == id),
-                                 secondaryjoin=(categories_posts.c.category_id == Category.id),
-                                 backref=db.backref('posts', lazy='dynamic'),
-                                 lazy='dynamic')
 
     def __init__(self, title, content, creation_time=None, last_modified=None, is_visible=None, is_deleted=None):
         self.title = title
@@ -107,8 +76,7 @@ class Post(db.Model):
             'is_deleted': self.is_deleted,
             'type_id': self.type_id,
             'author_id': self.author_id,
-            'tags': [t.output_obj() for t in self.tags],
-            'categories': [c.output_obj() for c in self.categories]
+            'tags': [t.output_obj() for t in self.tags]
         }
 
     @property

@@ -6,7 +6,6 @@ from helptux.modules.api import HelptuxApi
 from helptux.modules.api.post import PostApi
 from helptux.modules.api.tag import TagApi
 from helptux.modules.api.type import TypeApi
-from helptux.modules.api.category import CategoryApi
 from helptux.modules.user.authentication import role_required, must_be_admin, must_be_editor, must_be_registered
 from helptux import app
 

@@ -44,20 +44,6 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="post.cat" class="sr-only">Categories</label>
-                        <input list="post.cats" id="post.cat" ng-model="input_cat" placeholder="Categories"
-                               class="form-control" ng-keydown="$event.which == 32 && cat_to_cats(input_cat)"
-                               ng-value="input_cat"  ng-change="reset_submit_button('post_submit', post.id)"/>
-                        <datalist id="post.cats">
-                            <option ng-value="cat.category" ng-repeat="cat in available_cats">{{cat.category}}</option>
-                        </datalist>
-                        <div>
-                            <ul>
-                                <li ng-repeat="cat in post.cats" ng-click="remove_cat(cat)">{{cat}}</li>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="row">

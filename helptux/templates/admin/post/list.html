@@ -8,7 +8,6 @@
             <th>Title</th>
             <th>Abstract</th>
             <th>Tags</th>
-            <th>Categories</th>
             <th>Author</th>
         </tr>
         </thead>
@@ -23,13 +22,6 @@
                     <div class="btn-group" role="group" aria-label="post_tags_{{ post.id }}">
                         {% for tag in post.tags %}
                             <button type="button" class="btn btn-default">{{ tag.tag }}</button>
-                        {% endfor %}
-                    </div>
-                </td>
-                <td>
-                    <div class="btn-group" role="group" aria-label="post_categories_{{ post.id }}">
-                        {% for cat in post.categories %}
-                            <button type="button" class="btn btn-default">{{ cat.category }}</button>
                         {% endfor %}
                     </div>
                 </td>

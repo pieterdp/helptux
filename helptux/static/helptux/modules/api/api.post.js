@@ -36,13 +36,6 @@ api_post.factory('ApiPost', ['$rootScope', 'ApiCore',
             }
             submit_post.tags = submit_tags;
 
-            /* Parse categories */
-            var submit_cats = [];
-            for(i = 0; i < input_data.cats.length; i++) {
-                submit_cats.push({category: input_data.cats[i]});
-            }
-            submit_post.categories = submit_cats;
-
             var api_promise;
             if (input_data.id < 0) {
                 /* The ID of a new post is always negative, e.g. -1; if we're editing a post, we get the correct id
@@ -82,11 +75,6 @@ api_post.factory('ApiPost', ['$rootScope', 'ApiCore',
             /* Parse tags */
             for(i = 0; i < api_post.tags.length; i++) {
                 view_post.tags.push(api_post.tags[i].tag);
-            }
-
-            /* Parse categories */
-            for(i = 0; i < api_post.categories.length; i++) {
-                view_post.cats.push(api_post.categories[i].category);
             }
 
             return view_post;

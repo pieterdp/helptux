@@ -6,12 +6,11 @@ from helptux import db
 from helptux.modules.error import RequiredAttributeMissing, DatabaseItemAlreadyExists, DatabaseItemDoesNotExist
 import helptux.modules.api.type
 import helptux.modules.api.user
-import helptux.modules.api.category
 import helptux.modules.api.tag
 
 
 class PostApi(GenericApi):
-    complex_params = ['categories', 'tags']
+    complex_params = ['tags']
     simple_params = ['title', 'content', 'creation_time', 'last_modified', 'is_visible', 'is_deleted', 'type_id',
                      'author_id']
     required_params = ['title', 'type_id', 'author_id']
@@ -62,9 +61,6 @@ class PostApi(GenericApi):
         # Add the tags
         for tag in cleaned_data['tags']:
             new_post.tags.append(self.new_tag(tag))
-        # Add the categories
-        for cat in cleaned_data['categories']:
-            new_post.categories.append(self.new_category(cat))
         # Commit
         db.session.commit()
         return new_post
@@ -123,10 +119,6 @@ class PostApi(GenericApi):
         existing_post = self.remove_tags(existing_post)
         for tag in cleaned_data['tags']:
             existing_post.tags.append(self.new_tag(tag))
-        # Remove all categories
-        existing_post = self.remove_categories(existing_post)
-        for cat in cleaned_data['categories']:
-            existing_post.categories.append(self.new_category(cat))
         # Commit
         db.session.commit()
         return existing_post
@@ -157,22 +149,6 @@ class PostApi(GenericApi):
         except DatabaseItemDoesNotExist:
             existing_tag = a_tag.create(tag_data)
         return existing_tag
-
-    def new_category(self, category_data):
-        a_cat = helptux.modules.api.category.CategoryApi()
-        if 'category' not in category_data:
-            raise RequiredAttributeMissing('Attribute category missing for new category')
-        try:
-            existing_category = a_cat.get_by_category(category_data['category'])
-        except DatabaseItemDoesNotExist:
-            existing_category = a_cat.create(category_data)
-        return existing_category
-
-    def remove_categories(self, entity):
-        for cat in entity.categories:
-            entity.categories.remove(cat)
-        db.session.commit()
-        return entity
 
     def remove_tags(self, entity):
         for tag in entity.tags:

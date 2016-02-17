@@ -1,7 +1,6 @@
 from flask import make_response
 import json
 from helptux.modules.api.post import PostApi
-from helptux.modules.api.category import CategoryApi
 from helptux.modules.api.tag import TagApi
 from helptux.modules.api.type import TypeApi
 from helptux.modules.error import DatabaseItemDoesNotExist, DatabaseItemAlreadyExists, RequiredAttributeMissing

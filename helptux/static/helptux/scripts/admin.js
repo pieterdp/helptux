@@ -48,32 +48,14 @@ app.controller('PostAdminCtrl', ['$scope', '$q', 'HelptuxGeneric', 'ApiCore', 'A
          */
         var a_type = new ApiType();
         var a_tag = new ApiTag();
-        var a_cat = new ApiCat();
         var a_post = new ApiPost();
         var h_tag = new HelptuxTagger();
-
-        /**
-         *
-         */
-        $scope.cat_to_cats = function(input_cat_name) {
-            $scope.post.cats.push(h_tag.add_tags_to_post('cats', input_cat_name, a_cat));
-            $scope.input_cat = undefined;
-        };
 
         $scope.tag_to_tags = function(input_tag_name) {
             $scope.post.tags.push(h_tag.add_tags_to_post('tags', input_tag_name, a_tag));
             $scope.input_tag = undefined;
         };
 
-        /**
-         *
-         */
-        $scope.remove_cat = function(input_cat_name) {
-            var cat_in_list = $scope.post.cats.indexOf(input_cat_name);
-            if(cat_in_list != -1) {
-                $scope.post.cats.splice(cat_in_list, 1);
-            }
-        };
 
         /**
          *
@@ -91,14 +73,12 @@ app.controller('PostAdminCtrl', ['$scope', '$q', 'HelptuxGeneric', 'ApiCore', 'A
          */
         a_type.list();
         a_tag.list();
-        a_cat.list();
 
         $scope.post = {
             id: $scope.new_post_id,
             title: '',
             type: '',
             content: '',
-            cats: [],
             tags: [],
             creation_time: ''
         };

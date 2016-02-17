@@ -11,6 +11,7 @@ class AngularJSHiddenField(HiddenField):
                 kwargs['ng-' + key[3:]] = kwargs.pop(key)
         return super(AngularJSHiddenField, self).__call__(**kwargs)
 
+
 class PostCreateForm(Form):
     title = StringField('Title', validators=[Required()])
     content = TextAreaField('Content', validators=[Required()])
