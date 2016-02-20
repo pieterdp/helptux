@@ -1,6 +1,8 @@
 from helptux import db
 from datetime import datetime
+from time import time
 import pytz
+import re
 # TODO is_deleted, is_visible
 
 
@@ -33,6 +35,7 @@ class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(512), index=True, nullable=False)
+    slug = db.Column(db.String(32), index=True, nullable=False)
     content = db.Column(db.Text, nullable=False)
     creation_time = db.Column(db.DateTime, default=None)
     last_modified = db.Column(db.DateTime, default=None)
@@ -49,6 +52,7 @@ class Post(db.Model):
 
     def __init__(self, title, content, creation_time=None, last_modified=None, is_visible=None, is_deleted=None):
         self.title = title
+        self.slug = self.mk_slug(title)
         self.content = content
         if creation_time is None:
             self.creation_time = datetime.now(tz=pytz.timezone('Europe/Brussels'))
@@ -68,6 +72,7 @@ class Post(db.Model):
         return {
             'id': self.id,
             'title': self.title,
+            'slug': self.slug,
             'content': self.content,
             'abstract': self.abstract,
             'creation_time': self.creation_time.isoformat(),
@@ -82,6 +87,23 @@ class Post(db.Model):
     @property
     def abstract(self):
         return self.content[:100]
+
+    def mk_slug(self, title):
+        # [^a-z]
+        # to lower
+        # sub
+        # A slug is like [chars from the original title]-[timestamp] and is 32 characters
+        non_alpha = re.compile('[^a-z]')
+        max_or_part_length = 32 - len(str(round(time())))
+        s_title = title.lower()
+        s_title = s_title[:max_or_part_length]
+        proposed_slug = non_alpha.sub('-', s_title)
+        # Check whether it exists, if it does, add the time. If it doesn't, just use it, as it is prettier
+        post_exists = Post.query.filter(Post.slug == proposed_slug).first()
+        if post_exists:
+            return '{0}-{1}'.format(proposed_slug, str(round(time())))
+        else:
+            return '{0}'.format(proposed_slug)
 
 
 class Type(db.Model):

@@ -1,12 +1,15 @@
 from datetime import datetime
+
 import pytz
-from helptux.modules.api.generic import GenericApi
-from helptux.models.post import Post
-from helptux import db
-from helptux.modules.error import RequiredAttributeMissing, DatabaseItemAlreadyExists, DatabaseItemDoesNotExist
+from sqlalchemy import and_
+
+import helptux.modules.api.tag
 import helptux.modules.api.type
 import helptux.modules.api.user
-import helptux.modules.api.tag
+from helptux import db
+from helptux.models.post import Post
+from helptux.modules.api.generic import GenericApi
+from helptux.modules.error import RequiredAttributeMissing, DatabaseItemAlreadyExists, DatabaseItemDoesNotExist
 
 
 class PostApi(GenericApi):
@@ -84,6 +87,18 @@ class PostApi(GenericApi):
         existing_posts = Post.query.all()
         return existing_posts
 
+    def paginate(self, page=None):
+        if page:
+            pages = Post.query.filter(and_(Post.is_deleted == 0, Post.is_visible == 1)).paginate(page=page,
+                                                                                                 error_out=False)
+        else:
+            pages = Post.query.filter(and_(Post.is_deleted == 0, Post.is_visible == 1)).paginate(page=1,
+                                                                                                 error_out=False)
+        if pages is not None:
+            return pages
+        else:
+            raise DatabaseItemDoesNotExist('No more posts.')
+
     def update(self, post_id, input_data, author_id=None):
         """
         Update an existing post. See self.create() and TagApi.update().
@@ -135,9 +150,18 @@ class PostApi(GenericApi):
         return True
 
     def get_by_title(self, post_title):
+        return self.by_title(post_title)
+
+    def by_title(self, post_title):
         existing_post = Post.query.filter(Post.title == post_title).first()
         if existing_post is None:
             raise DatabaseItemDoesNotExist('No post with title {0}'.format(post_title))
+        return existing_post
+
+    def by_slug(self, post_slug):
+        existing_post = Post.query.filter(Post.slug == post_slug).first()
+        if existing_post is None:
+            raise DatabaseItemDoesNotExist('No post with slug {0}'.format(post_slug))
         return existing_post
 
     def new_tag(self, tag_data):

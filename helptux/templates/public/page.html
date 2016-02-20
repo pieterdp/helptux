@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 blog-main">
+                <div class="blog-post">
+                    <h2 class="blog-post-title">{{ page.title }}</h2>
+                    {{ page.formatted_content }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

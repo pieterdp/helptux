@@ -18,10 +18,14 @@ class ViewPost:
         :param post:
         :return:
         """
+        # Completely ununderstandable bug
+        print(post)
         return {
             'title': post.title,
+            'slug': post.slug,
             'formatted_date': post.last_modified.strftime('%d-%m-%Y'),
             'author': post.author.username,
             'formatted_content': Markup(self.post_to_html(post.content)),
+            'formatted_abstract': Markup(self.post_to_output_obj(post.abstract)),
             'tags': post.tags
         }

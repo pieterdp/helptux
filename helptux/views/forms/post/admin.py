@@ -25,4 +25,4 @@ class PostEditForm(Form):
 
 
 class PostDeleteForm(Form):
-    pass
+    submit = SubmitField('Confirm delete')

@@ -3,7 +3,8 @@ from flask.ext.login import login_required
 from helptux.modules.api.post import PostApi
 from helptux.modules.api.type import TypeApi
 from helptux.modules.user.authentication import must_be_editor
-from helptux.views.forms.post.admin import PostCreateForm
+from helptux.views.forms.post.admin import PostDeleteForm
+from helptux.modules.error import DatabaseItemDoesNotExist
 from helptux import app
 
 
@@ -43,4 +44,25 @@ def v_post_edit(post_id):
 @login_required
 @must_be_editor
 def v_post_delete(post_id):
-    pass
+    a_post = PostApi()
+    form = PostDeleteForm()
+    try:
+        existing_post = a_post.read(post_id)
+    except DatabaseItemDoesNotExist as e:
+        flash('No post with id {0}'.format(post_id))
+        return redirect(url_for('.v_post_list'))
+    except Exception as e:
+        flash('An unexpected error occurred: {0}'.format(e))
+        # flash('An unexpected error occurred.')
+        return redirect(url_for('.v_post_list'))
+
+    if request.method == 'POST' and form.validate_on_submit():
+        if a_post.delete(post_id) is True:
+            flash('Post {0} deleted'.format(existing_post.id))
+            return redirect(url_for('.v_post_list'))
+        else:
+            flash('Unable to delete post {0}'.format(existing_post.id))
+            return render_template('admin/post/delete.html', form=form, post_id=post_id, slug=existing_post.slug)
+
+    return render_template('admin/post/delete.html', form=form, post_id=post_id, slug=existing_post.slug)
+

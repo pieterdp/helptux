@@ -11,11 +11,7 @@ login_manager.session_protection = 'strong'
 login_manager.init_app(app)
 login_manager.login_view = '.v_login'
 
-from helptux.views.api import *
-from helptux.views.admin.auth import *
-from helptux.views.admin.user import *
-from helptux.views.admin.post import *
-from helptux.views.blog import *
+from helptux.routes import *
 
 
 @app.route('/')
@@ -23,18 +19,3 @@ from helptux.views.blog import *
 @app.route('/home')
 def v_index():
     return render_template('indexpage.html')
-
-
-@app.route('/about')
-def v_about():
-    return ''
-
-
-@app.route('/contact')
-def v_contact():
-    return ''
-
-
-@app.route('/blog')
-def v_blog():
-    return ''

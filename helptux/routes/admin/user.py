@@ -132,8 +132,8 @@ def v_user_delete(user_id):
         flash('No user with id {0}'.format(user_id))
         return redirect(url_for('.v_user_list'))
     except Exception as e:
-        flash('An unexpected error occured: {0}'.format(e))
-        # flash('An unexpected erro occured.')
+        flash('An unexpected error occurred: {0}'.format(e))
+        # flash('An unexpected error occurred.')
         return redirect(url_for('.v_user_list'))
 
     if request.method == 'POST' and form.validate_on_submit():

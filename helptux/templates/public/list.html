@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        {% for post in posts %}
+        <div class="row">
+            <div class="col-sm-8 blog-main">
+                <div class="blog-post">
+                    <h2 class="blog-post-title"><a href="{{ url_for('.v_show_post', post_slug=post.slug) }}">{{ post.title }}</a></h2>
+                    <p class="blog-post-meta">{{ post.formatted_date }} by <a href="#">{{ post.author }}</a></p>
+                    {{ post.formatted_abstract }}
+                    <p class="blog-post-meta"><a href="{{ url_for('.v_show_post', post_slug=post.slug) }}">read more ...</a></p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="row">
+            <div class="col-sm-3 col-sm-offset-1">
+                {% if next %}
+                <a href="{{ url_for('.v_list_post', page=next.page) }}">
+                    <div class="col-sm-1 btn btn-lg btn-default">
+                        <p>Older posts</p>
+                    </div>
+                </a>
+                {% endif %}
+            </div>
+            <div class="col-sm3">
+                {% if previous %}
+                <a href="{{ url_for('.v_list_post', page=previous.page) }}">
+                    <div class="col-sm-1 col-sm-offset-2 btn btn-lg btn-default">
+                        <p>Newer posts</p>
+                    </div>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
